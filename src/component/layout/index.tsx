@@ -12,6 +12,7 @@ export interface AdminLayoutProps {
   footer?: React.ReactElement
   className?: string
   style?: React.CSSProperties
+  collapsed: boolean
 }
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({
@@ -21,13 +22,16 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
   footer,
   className,
   style,
+  collapsed,
 }) => {
   return (
     <Layout className={`Layout ${className}`} style={style}>
-      <Sider>{sider}</Sider>
+      <Sider trigger={null} collapsible collapsed={collapsed}>
+        {sider}
+      </Sider>
       <Layout>
         <Header>{header}</Header>
-        <Content>{content}</Content>
+        <Content className='content'>{content}</Content>
         <Footer>{footer}</Footer>
       </Layout>
     </Layout>

@@ -13,7 +13,9 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "antd": "^4.21.3",
+    "axios": "^0.27.2",
     "craco-antd": "^2.0.0",
+    "echarts": "^5.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
@@ -43,5 +45,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "echarts-for-react": "^3.0.2",
+    "mock-service-plugin": "^1.1.1",
+    "mocker-api": "^2.9.5",
+    "mockjs": "^1.1.0"
   }
 }
