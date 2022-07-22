@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactEcharts from 'echarts-for-react'
-import { Col, Row, Space } from 'antd'
+import { Col, Row } from 'antd'
 import './home.less'
 
 const Home: React.FC = () => {

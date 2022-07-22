@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
-import { Button, Space, Table, Tag } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Button, Form, Space, Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/lib/table'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { SizeType } from 'antd/lib/config-provider/SizeContext'
 import Search from 'antd/lib/input/Search'
-import AdminModal from './child/modal'
+
 import axios from 'axios'
+import { useForm } from 'antd/lib/form/Form'
+import AdminModal from './child/modal/modal'
 
 export interface DataType {
-  key: string
+  id: number
   name: string
-  age: number
+  key: number
   address: string
   tags: string[]
 }
@@ -18,18 +20,26 @@ export interface DataType {
 const Page1 = () => {
   const [size, setSize] = useState<SizeType>('large')
   const [isModalVisible, setIsModalVisible] = useState(false as boolean)
+  const [data, setData] = useState([] as DataType[])
+  const [loading, setLoading] = useState(true as boolean)
+  const [title, setTitle] = useState('' as string)
+  const [form] = Form.useForm()
 
+  useEffect(() => {
+    axios.post('/api/user').then((res) => {
+      console.log(res.data)
+
+      let data = res.data.list
+      setData(data)
+      setLoading(false)
+    })
+  }, [])
   const columns: ColumnsType<DataType> = [
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
       render: (text) => <a>{text}</a>,
-    },
-    {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
     },
     {
       title: 'Address',
@@ -66,6 +76,16 @@ const Page1 = () => {
             shape='circle'
             icon={<EditOutlined />}
             size={size}
+            onClick={() => {
+              // 把原本的字符串通过处理成字符串数组后赋值给address，但是这里是ts语法，直接赋值类型不匹配，所以要通过这种写法
+              //  record.address = record.address.split(' ') // 这种写法会报错，字符串数组不能赋值给字符串
+              form.setFieldsValue({
+                ...record,
+                address: record.address.split(' '),
+              })
+              setIsModalVisible(true)
+              setTitle('修改')
+            }}
           />
           <Button
             type='primary'
@@ -73,37 +93,40 @@ const Page1 = () => {
             icon={<DeleteOutlined />}
             size={size}
             danger
+            onClick={() => {
+              console.log(record)
+              let id = record.id
+              axios.post('/api/user/del', { id }).then((res) => {
+                console.log(res)
+
+                let data = res.data.list
+                setData(data)
+              })
+            }}
           />
         </Space>
       ),
     },
   ]
 
-  const data: DataType[] = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-  ]
   const showModal = () => {
+    form.resetFields()
     setIsModalVisible(true)
+    setTitle('添加')
+  }
+  const handleOk = (val: any) => {
+    setIsModalVisible(false)
+    axios.post('/api/user/add', { data: val }).then((res) => {
+      let data = res.data.list
+      setData(data)
+    })
+  }
+  const handleUpdate = (val: any) => {
+    setIsModalVisible(false)
+    axios.post('/api/user/update', { data: val }).then((res) => {
+      let data = res.data.list
+      setData(data)
+    })
   }
 
   return (
@@ -119,15 +142,7 @@ const Page1 = () => {
         >
           添加
         </Button>
-        <Button
-          onClick={() => {
-            axios.get('/api/user').then((res) => {
-              console.log(res.data)
-            })
-          }}
-        >
-          asd
-        </Button>
+        <Button onClick={() => {}}>asd</Button>
         <Search
           placeholder='请输入搜索内容'
           onSearch={() => console.log('搜索成功')}
@@ -135,11 +150,20 @@ const Page1 = () => {
           size={size}
         />
       </Space>
-      <Table columns={columns} dataSource={data} />
+      <Table
+        loading={loading}
+        columns={columns}
+        dataSource={data}
+        pagination={{ pageSize: 6 }}
+      />
       <AdminModal
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
         columns={columns}
+        handleOk={handleOk}
+        handleUpdate={handleUpdate}
+        form={form}
+        title={title}
       />
     </div>
   )

@@ -1,21 +1,20 @@
-import React, { Suspense, useEffect, useState } from 'react'
-import {
-  useRoutes,
-  useNavigate,
-  Navigate,
-  Link,
-  useLocation,
-  To,
-} from 'react-router-dom'
+import React, { Suspense, useState } from 'react'
+import { useRoutes, useNavigate, Navigate } from 'react-router-dom'
 
 import AdminLayout from './component/layout'
 import AdminMenu from './component/menu'
 import { MenuConfig } from './config/router.config'
-import './App.less'
 import Home from './pages/home'
-import { PlusCircleOutlined, VideoCameraOutlined } from '@ant-design/icons'
-import Page1 from './pages/page1'
+import Map from './pages/PAGEs/map'
+import './App.less'
+import {
+  AntDesignOutlined,
+  PlusCircleOutlined,
+  VideoCameraOutlined,
+} from '@ant-design/icons'
+import Page1 from './pages/page1/page1'
 import AdminHeader from './component/header'
+import Page2 from './pages/page2'
 
 const App: React.FC = () => {
   const navigate = useNavigate()
@@ -45,7 +44,7 @@ const App: React.FC = () => {
       path: '/page2',
       icon: <PlusCircleOutlined />,
       onClick: () => navigate('/page2'),
-      element: <div>page2</div>,
+      element: <Page2 />,
     },
     {
       label: 'PAGEs',
@@ -61,11 +60,56 @@ const App: React.FC = () => {
           onClick: () => navigate('/pages/page-x'),
           element: <div>xxx</div>,
         },
+        {
+          label: '地图可视化',
+          key: 'map',
+          path: '/pages/map',
+          icon: <PlusCircleOutlined />,
+          onClick: () => navigate('/pages/map'),
+          element: <Map />,
+        },
+      ],
+    },
+    {
+      label: 'antd 组件',
+      key: 'antd_components',
+      icon: <AntDesignOutlined />,
+      children: [
+        {
+          label: 'Button',
+          key: 'Button',
+          path: '/antd',
+          onClick: () => navigate('/antd'),
+        },
+        {
+          label: 'Icon',
+          key: 'Icon',
+          path: '/icon',
+          onClick: () => navigate('/icon'),
+        },
+        {
+          label: 'Table',
+          key: 'Table',
+          path: '/table',
+          onClick: () => navigate('/table'),
+        },
+        {
+          label: 'Form',
+          key: 'Form',
+          path: '/form',
+          onClick: () => navigate('/form'),
+        },
+        {
+          label: 'Input',
+          key: 'Input',
+          path: '/input',
+          onClick: () => navigate('/input'),
+        },
       ],
     },
     {
       label: '未知页',
-      key: '*',
+      key: 'wqgey',
       path: '*',
       icon: <PlusCircleOutlined />,
       onClick: () => navigate('*'),
